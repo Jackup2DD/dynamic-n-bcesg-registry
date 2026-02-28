@@ -1,27 +1,85 @@
 <!doctype html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>dynamic-n-bcesg-registry</title>
-    <style>body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.6;padding:2rem;color:#111}header{border-bottom:1px solid #eee;padding-bottom:1rem;margin-bottom:1rem}a{color:#0366d6}</style>
-  </head>
-  <body>
-    <header>
-      <h1>dynamic-n-bcesg-registry</h1>
-      <p>Valuation: $5,250,000,000,000.00 USD — Date: February 28, 2026</p>
-    </header>
+    <title>Genesis Node Minting | Mankind Protocol</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        :root { --gold: #d4af37; --cyan: #00f2ff; --dark: #050a15; }
+        body { background: var(--dark); color: white; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        
+        /* ใบเซอร์ฯ ที่จะถูกเซฟเป็นรูป */
+        #deed-container {
+            background: linear-gradient(145deg, #0a1020, #000);
+            border: 2px solid var(--cyan);
+            border-radius: 20px;
+            padding: 30px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.2);
+            position: relative;
+        }
 
-    <main>
-      <p>This repository hosts the project skeleton and documentation.</p>
-      <ul>
-        <li><a href="/Digital-Signature-Protocol.md">Digital Signature Protocol</a></li>
-        <li><a href="/legal/">Legal</a></li>
-        <li><a href="/assets/">Assets</a></li>
-        <li><a href="/backend/">Backend</a></li>
-        <li><a href="/contracts/">Contracts</a></li>
-      </ul>
-      <p>Published via GitHub Pages (main / root).</p>
-    </main>
-  </body>
+        .valuation { color: #00ff88; font-size: 1.5rem; font-weight: bold; margin: 15px 0; }
+        .license { color: #888; font-size: 0.8rem; }
+        
+        /* เหรียญ BESG ดิ้นได้ */
+        .coin-area { height: 100px; margin-top: 20px; display: none; }
+        .coin {
+            width: 60px; height: 60px; background: var(--gold);
+            border-radius: 50%; display: inline-block;
+            line-height: 60px; font-weight: bold; color: black;
+            animation: bounce 0.6s infinite alternate;
+            box-shadow: 0 0 15px var(--gold);
+        }
+        @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-30px); } }
+
+        .btn {
+            background: linear-gradient(to right, var(--cyan), #00ff88);
+            color: black; border: none; padding: 15px 30px;
+            font-weight: bold; border-radius: 10px; cursor: pointer;
+            margin-top: 20px; width: 100%;
+        }
+        #save-btn { background: #444; color: white; display: none; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div id="deed-container">
+        <h2 style="color: var(--cyan);">NFT Genesis Node</h2>
+        <p>Authority: <strong>Nithirote Suwatthiranin</strong></p>
+        <p class="license">ID: SEC 134685 | Sovereign Registry</p>
+        <div class="valuation">$5,250,000,000,000.00 USD</div>
+        
+        <div id="status-tag" style="color: #ffcc00;">[ STATUS: READY ]</div>
+        
+        <div id="coin-area" class="coin-area">
+            <div class="coin">BESG</div>
+        </div>
+    </div>
+
+    <button class="btn" onclick="startMint()">▶ EXECUTE MINT</button>
+    <button id="save-btn" class="btn" onclick="saveImage()">📥 SAVE TO DEVICE</button>
+
+    <script>
+        function startMint() {
+            document.getElementById('status-tag').innerHTML = "✅ MINT SUCCESSFUL!";
+            document.getElementById('status-tag').style.color = "#00ff88";
+            document.getElementById('coin-area').style.display = "block";
+            document.getElementById('save-btn').style.display = "block";
+            alert("Digital Signature Recorded: 0x... [2026-02-28]");
+        }
+
+        function saveImage() {
+            const element = document.getElementById('deed-container');
+            html2canvas(element, { backgroundColor: '#050a15' }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'Mankind-Genesis-Node-001.png';
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+            });
+        }
+    </script>
+</body>
 </html>
