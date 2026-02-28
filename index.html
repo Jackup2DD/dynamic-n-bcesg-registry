@@ -1,39 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Mankind Sovereign Protocol | Registry v1.0</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <meta charset="UTF-8">
+    <title>Mankind Protocol - Mint Successful</title>
     <style>
-        :root { --gold: #d4af37; --cyan: #00f2ff; --dark: #050a15; --success: #00ff88; }
-        body { background: var(--dark); color: white; font-family: 'Segoe UI', Arial, sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; min-height: 100vh; }
+        body { margin: 0; background: #0a0a0a; overflow: hidden; font-family: 'Arial', sans-serif; }
         
-        #registry-cert {
-            background: linear-gradient(145deg, #0a1020, #000);
-            border: 2px solid var(--gold);
-            border-radius: 20px;
-            padding: 40px;
-            width: 100%;
-            max-width: 450px;
-            text-align: center;
-            box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
-            position: relative;
+        #ui-container {
+            position: absolute; width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center;
+            z-index: 10; pointer-events: none;
         }
 
-        .brand { color: var(--gold); letter-spacing: 2px; font-weight: bold; text-transform: uppercase; }
-        .valuation { color: var(--success); font-size: 1.8rem; font-weight: bold; margin: 20px 0; border-bottom: 1px solid #333; padding-bottom: 10px; }
-        .license { color: #888; font-size: 0.85rem; margin-top: 10px; }
-        
-        .coin-animation { height: 80px; margin: 20px 0; display: none; }
-        .besg-coin {
-            width: 60px; height: 60px; background: var(--gold); border-radius: 50%;
-            display: inline-block; line-height: 60px; font-weight: bold; color: black;
-            animation: bounce 0.6s infinite alternate; box-shadow: 0 0 20px var(--gold);
+        .mint-text {
+            color: #ffd700; font-size: 3rem; font-weight: bold;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            animation: pulse 2s infinite;
         }
-        @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-25px); } }
 
-        .action-btn {
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        /* เหรียญหรือเอกสารที่เด้งออกมา */
+        .coin {
+            position: absolute;
+            width: 80px; height: 80px;
+            background: radial-gradient(circle, #ffd700 0%, #b8860b 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 15px rgba(255,215,0,0.8);
+            display: flex; justify-content: center; align-items: center;
+            font-weight: bold; color: #5c4033; border: 2px solid #fff;
+            opacity: 0;
+        }
+
+        /* Animation เด้งวนลูป */
+        @keyframes popAndFly {
+            0% { transform: translate(0, 0) scale(0); opacity: 0; }
+            20% { opacity: 1; transform: translate(var(--tx), var(--ty)) scale(1.2) rotate(var(--tr)); }
+            80% { opacity: 1; }
+            100% { transform: translate(var(--tx-end), var(--ty-end)) scale(0.5) rotate(calc(var(--tr) * 2)); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="ui-container">
+    <div class="mint-text">MINT SUCCESSFUL<br><center style="font-size: 1.5rem;">880M BESG</center></div>
+</div>
+
+<script>
+    const container = document.body;
+
+    function createCoin() {
+        const coin = document.createElement('div');
+        coin.className = 'coin';
+        coin.innerText = 'BESG';
+        
+        // สุ่มทิศทางการเด้ง (Loop-based)
+        const angle = Math.random() * Math.PI * 2;
+        const dist = 200 + Math.random() * 200;
+        
+        coin.style.setProperty('--tx', `${Math.cos(angle) * dist}px`);
+        coin.style.setProperty('--ty', `${Math.sin(angle) * dist}px`);
+        coin.style.setProperty('--tx-end', `${Math.cos(angle) * (dist + 100)}px`);
+        coin.style.setProperty('--ty-end', `${Math.sin(angle) * (dist + 100)}px`);
+        coin.style.setProperty('--tr', `${Math.random() * 360}deg`);
+
+        // ตั้งค่าตำแหน่งเริ่มต้นกึ่งกลาง
+        coin.style.left = '50%';
+        coin.style.top = '50%';
+        coin.style.marginLeft = '-40px';
+        coin.style.marginTop = '-40px';
+
+        // สั่งให้เด้งวนลูป
+        coin.style.animation = `popAndFly ${2 + Math.random() * 2}s linear infinite`;
+
+        container.appendChild(coin);
+
+        // ทำความสะอาด DOM เมื่อไม่ได้ใช้ (Optionally) แต่ใน GitHub แนะนำให้วนลูปสร้างเรื่อยๆ
+        setTimeout(() => { coin.remove(); }, 4000);
+    }
+
+    // สร้างเหรียญออกมาเรื่อยๆ แบบวนลูป
+    setInterval(createCoin, 300);
+</script>
+
+</body>
+</html>
             background: linear-gradient(to right, var(--gold), #f3da8b);
             color: black; border: none; padding: 18px 40px;
             font-weight: bold; border-radius: 12px; cursor: pointer;
