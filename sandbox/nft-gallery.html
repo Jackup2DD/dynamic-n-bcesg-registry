@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Genesis Node NFT - Dynamic N Bc.ESGs</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0f1729 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #00d4ff;
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #aaa;
+            margin-bottom: 1rem;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .nft-card {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(0, 255, 136, 0.05) 100%);
+            border: 2px solid #00d4ff;
+            border-radius: 16px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(0, 212, 255, 0.2);
+        }
+
+        .nft-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 48px rgba(0, 212, 255, 0.3);
+            border-color: #00ff88;
+        }
+
+        .nft-image {
+            width: 100%;
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #1a3a52 0%, #0d1f2d 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 2px solid #00d4ff;
+        }
+
+        .nft-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(0, 255, 136, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .image-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            gap: 1rem;
+        }
+
+        .image-title {
+            font-size: 1.2rem;
+            color: #00d4ff;
+            font-weight: bold;
+            margin-top: 1rem;
+        }
+
+        .nft-content {
+            padding: 2rem;
+        }
+
+        .nft-header {
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.3);
+            padding-bottom: 1.5rem;
+        }
+
+        .nft-name {
+            font-size: 1.6rem;
+            color: #00ff88;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .nft-description {
+            font-size: 0.95rem;
+            color: #aaa;
+            line-height: 1.6;
+        }
+
+        .traits-section {
+            margin-top: 1.5rem;
+        }
+
+        .traits-title {
+            font-size: 1rem;
+            color: #00d4ff;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .traits-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+        }
+
+        .trait {
+            background: rgba(0, 212, 255, 0.05);
+            border: 1px solid #00d4ff;
+            border-radius: 8px;
+            padding: 0.8rem;
+        }
+
+        .trait-type {
+            font-size: 0.75rem;
+            color: #00d4ff;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: bold;
+            margin-bottom: 0.3rem;
+        }
+
+        .trait-value {
+            font-size: 0.9rem;
+            color: #fff;
+            word-break: break-word;
+        }
+
+        .special-trait {
+            background: rgba(0, 255, 136, 0.1);
+            border-color: #00ff88;
+        }
+
+        .special-trait .trait-type {
+            color: #00ff88;
+        }
+
+        .metadata-raw {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #00d4ff;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .metadata-title {
+            font-size: 1.1rem;
+            color: #00d4ff;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        code {
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.85rem;
+            color: #00ff88;
+            line-height: 1.6;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            font-size: 1.2rem;
+            color: #00d4ff;
+        }
+
+        .error {
+            background: rgba(255, 68, 68, 0.1);
+            border: 2px solid #ff4444;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            color: #ff8888;
+            margin: 2rem 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #00ff88;
+            color: #000;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .symbol {
+            background: #00d4ff;
+            color: #000;
+        }
+
+        @media (max-width: 768px) {
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .nft-card {
+                margin: 0 auto;
+                max-width: 100%;
+            }
+        }
+
+        .scroll-indicator {
+            text-align: center;
+            margin-top: 2rem;
+            color: #00d4ff;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>NFT Genesis Node Gallery</h1>
+            <p class="subtitle">Dynamic N Bc.ESGs - Sovereign Digital Infrastructure</p>
+        </div>
+
+        <div id="gallery" class="gallery">
+            <div class="loading">Loading NFT metadata...</div>
+        </div>
+
+        <div id="metadata-section" class="metadata-raw" style="display: none;">
+            <div class="metadata-title">Raw Metadata (JSON)</div>
+            <code id="metadata-display"></code>
+        </div>
+
+        <div class="scroll-indicator">
+            <p>🔐 NFT Data Retrieved from GitHub Repository</p>
+        </div>
+    </div>
+
+    <script>
+        // Fetch and parse NFT metadata
+        async function loadNFTMetadata() {
+            try {
+                const metadataUrl = 'https://raw.githubusercontent.com/Jackup2DD/dynamic-n-bcesg-registry/main/contracts/nft-genesis-node-metadata.json';
+                
+                const response = await fetch(metadataUrl);
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch metadata: ${response.status}`);
+                }
+
+                const metadata = await response.json();
+                displayNFTCard(metadata);
+                displayRawMetadata(metadata);
+            } catch (error) {
+                console.error('Error loading metadata:', error);
+                document.getElementById('gallery').innerHTML = `
+                    <div class="error">
+                        <h3>⚠️ Error Loading NFT</h3>
+                        <p>${error.message}</p>
+                        <p style="margin-top: 1rem; font-size: 0.9rem;">
+                            Trying to fetch from: https://raw.githubusercontent.com/Jackup2DD/dynamic-n-bcesg-registry/main/contracts/nft-genesis-node-metadata.json
+                        </p>
+                    </div>
+                `;
+            }
+        }
+
+        function displayNFTCard(metadata) {
+            const gallery = document.getElementById('gallery');
+            gallery.innerHTML = '';
+
+            const card = document.createElement('div');
+            card.className = 'nft-card';
+
+            // Image section
+            const imageHtml = `
+                <div class="nft-image">
+                    <div class="image-content">
+                        <span>🎨</span>
+                        <div class="image-title">Genesis Node</div>
+                    </div>
+                </div>
+            `;
+
+            // Content section
+            let traitsHtml = '<div class="traits-grid">';
+            
+            if (metadata.attributes && Array.isArray(metadata.attributes)) {
+                metadata.attributes.forEach(attr => {
+                    const isSpecial = attr.trait_type === 'Rarity' || 
+                                     attr.trait_type === 'Serial Number' ||
+                                     attr.trait_type === 'Edition';
+                    const traitClass = isSpecial ? 'trait special-trait' : 'trait';
+                    
+                    traitsHtml += `
+                        <div class="${traitClass}">
+                            <div class="trait-type">${attr.trait_type}</div>
+                            <div class="trait-value">${attr.value}</div>
+                        </div>
+                    `;
+                });
+            }
+            traitsHtml += '</div>';
+
+            const contentHtml = `
+                <div class="nft-content">
+                    <div class="nft-header">
+                        <div class="nft-name">${metadata.name || 'Unnamed NFT'}</div>
+                        ${metadata.symbol ? `<span class="badge symbol">${metadata.symbol}</span>` : ''}
+                        ${metadata.attributes?.find(a => a.trait_type === 'Rarity') ? 
+                            `<span class="badge">${metadata.attributes.find(a => a.trait_type === 'Rarity').value}</span>` : ''}
+                        <p class="nft-description">${metadata.description || 'No description provided'}</p>
+                    </div>
+
+                    <div class="traits-section">
+                        <div class="traits-title">Properties</div>
+                        ${traitsHtml}
+                    </div>
+
+                    ${metadata.collection ? `
+                        <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(0, 212, 255, 0.3);">
+                            <div class="traits-title">Collection</div>
+                            <div style="font-size: 0.95rem; color: #aaa;">
+                                <strong style="color: #00d4ff;">${metadata.collection.name}</strong>
+                                <br>Family: <span style="color: #fff;">${metadata.collection.family}</span>
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    ${metadata.external_url ? `
+                        <div style="margin-top: 1.5rem;">
+                            <a href="${metadata.external_url}" target="_blank" style="
+                                display: inline-block;
+                                padding: 0.8rem 1.5rem;
+                                background: linear-gradient(135deg, #00d4ff 0%, #00ff88 100%);
+                                color: #000;
+                                text-decoration: none;
+                                border-radius: 8px;
+                                font-weight: bold;
+                                transition: transform 0.3s;
+                            "
+                            onmouseover="this.style.transform='scale(1.05)'"
+                            onmouseout="this.style.transform='scale(1)'">
+                                🔗 View Details
+                            </a>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+
+            card.innerHTML = imageHtml + contentHtml;
+            gallery.appendChild(card);
+        }
+
+        function displayRawMetadata(metadata) {
+            const metadataSection = document.getElementById('metadata-section');
+            const metadataDisplay = document.getElementById('metadata-display');
+            
+            const jsonString = JSON.stringify(metadata, null, 2);
+            metadataDisplay.textContent = jsonString;
+            metadataSection.style.display = 'block';
+        }
+
+        // Load metadata when page loads
+        document.addEventListener('DOMContentLoaded', loadNFTMetadata);
+    </script>
+</body>
+</html>
