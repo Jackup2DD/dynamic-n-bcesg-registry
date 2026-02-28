@@ -1,0 +1,56 @@
+(* Zilliqa NFT Minting Contract for Dynamic N Bc.ESGs Genesis Node *)
+scilla_version 0
+
+library DynamicNMint
+
+let one = Uint128 1
+let zero = Uint256 0
+
+type GenesisNodeRecord = 
+| GenesisNode of Uint256 String String
+
+contract DynamicNMint
+(initial_owner : ByStr20)
+
+field genesis_node_minted : Bool = False
+field minting_timestamp : Uint256 = zero
+
+transition MintGenesisNode(
+    serial_number : String,
+    valuation_usd : Uint256
+)
+    is_sole_director = builtin eq _sender initial_owner;
+    match is_sole_director with
+    | False =>
+        e = { _eventname : "Error"; code : Uint32 4 };
+        event e;
+        throw
+    | True =>
+        valid_serial = builtin eq serial_number "BC-ESGs-00000001";
+        match valid_serial with
+        | False =>
+            e = { _eventname : "Error"; code : Uint32 1 };
+            event e;
+            throw
+        | True =>
+            expected_valuation = Uint256 5250000000000;
+            valid_valuation = builtin eq valuation_usd expected_valuation;
+            match valid_valuation with
+            | False =>
+                e = { _eventname : "Error"; code : Uint32 2 };
+                event e;
+                throw
+            | True =>
+                genesis_node_minted := true;
+                minting_timestamp := _block_number;
+                e = {
+                    _eventname : "GenesisNodeMinted";
+                    serial_number : serial_number;
+                    authority : _sender;
+                    timestamp : _block_number
+                };
+                event e
+            end
+        end
+    end
+end

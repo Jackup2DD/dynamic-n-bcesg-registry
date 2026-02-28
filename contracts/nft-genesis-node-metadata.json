@@ -1,0 +1,16 @@
+{
+  "name": "Dynamic N Bc.ESGs - Genesis Node",
+  "description": "The inaugural NFT certificate of the Dynamic N Bc.ESGs sovereign digital infrastructure.",
+  "image": "ipfs://QmdynamicGenesisNode2026",
+  "external_url": "https://jackup2dd.github.io/dynamic-n-bcesg-registry/",
+  "attributes": [
+    {"trait_type": "Serial Number", "value": "BC-ESGs-00000001"},
+    {"trait_type": "Issue Date", "value": "2026-02-18"},
+    {"trait_type": "Minting Date", "value": "2026-02-28"},
+    {"trait_type": "Legal Authority", "value": "Nithirote Suwatthiranin (SEC 134685)"},
+    {"trait_type": "Networks", "value": "Solana + Zilliqa"},
+    {"trait_type": "Valuation", "value": "$5,250,000,000,000.00 USD"},
+    {"trait_type": "Rarity", "value": "Legendary (1/1)"}
+  ],
+  "symbol": "BESG-GN-001"
+}

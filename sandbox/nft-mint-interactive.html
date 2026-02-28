@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>NFT Genesis Node Minting - Dynamic N Bc.ESGs</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%); 
+               min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 2rem; color: #fff; }
+        .container { max-width: 900px; width: 100%; background: rgba(20, 30, 60, 0.9); border: 2px solid #00d4ff; 
+                     border-radius: 16px; padding: 2rem; box-shadow: 0 8px 32px rgba(0, 212, 255, 0.2); }
+        header { text-align: center; margin-bottom: 2rem; border-bottom: 2px solid #00ff88; padding-bottom: 1rem; }
+        h1 { font-size: 2.2rem; color: #00d4ff; margin-bottom: 0.5rem; }
+        .status { display: inline-block; background: #00ff88; color: #000; padding: 0.5rem 1rem; 
+                  border-radius: 20px; font-weight: bold; margin-top: 0.5rem; font-size: 0.9rem; }
+        .details { background: rgba(0, 212, 255, 0.05); border: 1px solid #00d4ff; border-radius: 8px; 
+                   padding: 1.5rem; margin-bottom: 2rem; }
+        .detail-row { display: flex; justify-content: space-between; padding: 0.8rem 0; 
+                      border-bottom: 1px solid rgba(0, 212, 255, 0.2); }
+        .detail-label { color: #00ff88; font-weight: bold; }
+        .detail-value { color: #fff; text-align: right; }
+        button { padding: 1rem 2rem; background: linear-gradient(135deg, #00d4ff 0%, #00ff88 100%); 
+                 color: #000; border: none; border-radius: 8px; font-size: 1rem; font-weight: bold; 
+                 cursor: pointer; transition: all 0.3s; text-transform: uppercase; letter-spacing: 1px; 
+                 width: 100%; }
+        button:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0, 212, 255, 0.4); }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+        #canvas { position: relative; height: 400px; background: radial-gradient(circle at center, 
+                  rgba(0, 212, 255, 0.05) 0%, transparent 70%); border: 1px solid #00d4ff; 
+                  border-radius: 8px; overflow: hidden; margin-top: 2rem; display: none; }
+        #canvas.active { display: block; }
+        .floating-doc { position: absolute; left: 50%; bottom: 50px; transform: translateX(-50%); 
+                        width: 120px; height: 160px; background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%); 
+                        border-radius: 8px; box-shadow: 0 10px 40px rgba(255, 215, 0, 0.5); 
+                        display: flex; align-items: center; justify-content: center; font-weight: bold; 
+                        color: #333; font-size: 0.8rem; text-align: center; padding: 10px; 
+                        animation: floatUp 2s ease-out forwards; }
+        @keyframes floatUp { 0% { opacity: 0; transform: translateX(-50%) translateY(100px) scale(0.5); }
+                             50% { opacity: 1; } 100% { opacity: 0; transform: translateX(-50%) translateY(-300px) scale(1); } }
+        .coin { position: absolute; width: 50px; height: 50px; background: radial-gradient(circle at 30% 30%, #ffff00, #ffcc00); 
+                border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+                font-weight: bold; color: #333; font-size: 0.7rem; box-shadow: 0 5px 15px rgba(255, 200, 0, 0.6); 
+                animation: coinBounce 1.5s ease-out forwards; }
+        .coin::after { content: 'BESG'; position: absolute; }
+        @keyframes coinBounce { 0% { opacity: 0; transform: scale(0) translateY(0); } 
+                                10% { opacity: 1; } 50% { transform: scale(1) translateY(-150px); } 
+                                100% { opacity: 0; transform: scale(0.8) translateY(-250px); } }
+        .success { background: rgba(0, 255, 136, 0.1); border: 2px solid #00ff88; border-radius: 8px; 
+                   padding: 1rem; margin-top: 1rem; display: none; text-align: center; }
+        .success.active { display: block; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎨 NFT Genesis Node Minting</h1>
+            <p>Dynamic N Bc.ESGs - Sandbox Mode</p><span class="status">✅ READY</span>
+        </header>
+        <div class="details">
+            <div class="detail-row"><span class="detail-label">Asset:</span><span class="detail-value">Dynamic N Bc.ESGs - Genesis Node</span></div>
+            <div class="detail-row"><span class="detail-label">Serial:</span><span class="detail-value">BC-ESGs-00000001</span></div>
+            <div class="detail-row"><span class="detail-label">Authority:</span><span class="detail-value">Nithirote Suwatthiranin (SEC 134685)</span></div>
+            <div class="detail-row"><span class="detail-label">Networks:</span><span class="detail-value">Solana + Zilliqa</span></div>
+            <div class="detail-row"><span class="detail-label">Valuation:</span><span class="detail-value">$5,250,000,000,000.00 USD</span></div>
+        </div>
+        <button id="mint-btn">▶ EXECUTE MINT</button>
+        <div id="canvas"></div>
+        <div class="success" id="success"><h2>✅ MINT SUCCESSFUL!</h2><p><strong>Token ID:</strong> BC-ESGs-00000001</p><p><strong>Time:</strong> <span id="timestamp"></span></p></div>
+    </div>
+    <script>
+        const btn = document.getElementById('mint-btn');
+        const canvas = document.getElementById('canvas');
+        const success = document.getElementById('success');
+        let minting = false;
+        btn.addEventListener('click', async () => {
+            if (minting) return;
+            minting = true;
+            btn.disabled = true;
+            canvas.classList.add('active');
+            await new Promise(r => setTimeout(r, 800));
+            for (let i = 0; i < 8; i++) {
+                setTimeout(() => {
+                    const coin = document.createElement('div');
+                    coin.className = 'coin';
+                    coin.style.left = (Math.random() * 80 + 10) + '%';
+                    coin.style.animationDelay = (i * 150) + 'ms';
+                    canvas.appendChild(coin);
+                    setTimeout(() => coin.remove(), 1500 + (i * 150));
+                }, i * 150);
+            }
+            const doc = document.createElement('div');
+            doc.className = 'floating-doc';
+            doc.innerHTML = '📜<br>Genesis<br>Node';
+            canvas.appendChild(doc);
+            setTimeout(() => doc.remove(), 2000);
+            await new Promise(r => setTimeout(r, 2000));
+            document.getElementById('timestamp').textContent = new Date().toISOString();
+            success.classList.add('active');
+            minting = false;
+            btn.disabled = false;
+        });
+    </script>
+</body>
+</html>
